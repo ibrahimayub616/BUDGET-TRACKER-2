@@ -206,3 +206,212 @@
     <script src="script.js"></script>
 </body>
 </html>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="SpendWise - Personal Budget and Expense Tracker">
+    <title>SpendWise | Budget Tracker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="header">
+        <div class="logo">Spend<span>Wise</span></div>
+        <nav>
+            <a href="#dashboard">Dashboard</a>
+            <a href="#expenses">Expenses</a>
+            <a href="#reports">Reports</a>
+        </nav>
+    </header>
+
+    <main class="container">
+
+        <section class="welcome">
+            <div>
+                <h1>Personal Finance Dashboard</h1>
+                <p>Manage your money. Track your expenses. Save smarter.</p>
+            </div>
+            <div class="date-display" id="todayDate"></div>
+        </section>
+
+        <section id="dashboard">
+            <h2>Financial Overview</h2>
+
+            <div class="summary-grid">
+                <div class="summary-card">
+                    <p>Monthly Budget</p>
+                    <h2 id="budgetDisplay">KES 0</h2>
+                </div>
+
+                <div class="summary-card">
+                    <p>Total Expenses</p>
+                    <h2 id="totalExpenses">KES 0</h2>
+                </div>
+
+                <div class="summary-card">
+                    <p>Remaining Balance</p>
+                    <h2 id="remainingBalance">KES 0</h2>
+                </div>
+
+                <div class="summary-card">
+                    <p>Total Savings</p>
+                    <h2 id="totalSavings">KES 0</h2>
+                </div>
+            </div>
+        </section>
+
+        <section class="budget-section">
+            <h2>Set Monthly Budget</h2>
+            <form id="budgetForm">
+                <input
+                    type="number"
+                    id="budgetInput"
+                    placeholder="Enter budget in KES"
+                    min="0"
+                    step="0.01"
+                    required
+                >
+                <button type="submit">Set Budget</button>
+            </form>
+        </section>
+
+        <section id="expenses">
+            <h2>Expense Categories</h2>
+
+            <div class="category-grid">
+                <div class="category-card">
+                    <span>🍔 Food</span>
+                    <h3 id="foodTotal">KES 0</h3>
+                </div>
+
+                <div class="category-card">
+                    <span>🚌 Transport</span>
+                    <h3 id="transportTotal">KES 0</h3>
+                </div>
+
+                <div class="category-card">
+                    <span>🏠 Rent</span>
+                    <h3 id="rentTotal">KES 0</h3>
+                </div>
+
+                <div class="category-card">
+                    <span>🎮 Entertainment</span>
+                    <h3 id="entertainmentTotal">KES 0</h3>
+                </div>
+
+                <div class="category-card">
+                    <span>💰 Savings</span>
+                    <h3 id="savingsCategoryTotal">KES 0</h3>
+                </div>
+
+                <div class="category-card">
+                    <span>💡 Utilities</span>
+                    <h3 id="utilitiesTotal">KES 0</h3>
+                </div>
+            </div>
+        </section>
+
+        <section class="add-expense">
+            <h2>Add New Transaction</h2>
+
+            <form id="expenseForm">
+
+                <div class="form-group">
+                    <label for="expenseName">Description</label>
+                    <input
+                        type="text"
+                        id="expenseName"
+                        placeholder="e.g. Shopping"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="expenseAmount">Amount (KES)</label>
+                    <input
+                        type="number"
+                        id="expenseAmount"
+                        placeholder="Enter amount"
+                        min="0.01"
+                        step="0.01"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="expenseCategory">Category</label>
+                    <select id="expenseCategory" required>
+                        <option value="">Select category</option>
+                        <option value="Food">Food</option>
+                        <option value="Transport">Transport</option>
+                        <option value="Rent">Rent</option>
+                        <option value="Entertainment">Entertainment</option>
+                        <option value="Savings">Savings</option>
+                        <option value="Utilities">Utilities</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="expenseDate">Date</label>
+                    <input type="date" id="expenseDate" required>
+                </div>
+
+                <button type="submit">Add Transaction</button>
+
+            </form>
+        </section>
+
+        <section id="reports" class="transactions">
+            <h2>Transaction History</h2>
+
+            <div class="filter-area">
+                <label for="filterCategory">Filter by category:</label>
+                <select id="filterCategory">
+                    <option value="All">All Categories</option>
+                    <option value="Food">Food</option>
+                    <option value="Transport">Transport</option>
+                    <option value="Rent">Rent</option>
+                    <option value="Entertainment">Entertainment</option>
+                    <option value="Savings">Savings</option>
+                    <option value="Utilities">Utilities</option>
+                </select>
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Description</th>
+                            <th>Amount</th>
+                            <th>Category</th>
+                            <th>Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="expenseList">
+                    </tbody>
+                </table>
+            </div>
+
+            <p id="emptyMessage">No transactions recorded yet.</p>
+        </section>
+
+        <section class="chart-section">
+            <h2>Spending Breakdown</h2>
+            <div id="spendingChart" class="chart"></div>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>© 2026 SpendWise. All Rights Reserved.</p>
+        <p>Personal Budget & Expense Tracker</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
