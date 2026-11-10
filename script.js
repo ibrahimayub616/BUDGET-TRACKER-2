@@ -1,382 +1,326 @@
-```javascript
-// ==========================================
-// SpendWise Interactive Budget Tracker
-// ==========================================
 
+// SpendWise Personal Budget and Expense Tracker
 
-// ==========================================
-// 1. ARRAY
-// Store all transaction records
-// ==========================================
+const categories = [
+    "Food",
+    "Transport",
+    "Rent",
+    "Entertainment",
+    "Savings",
+    "Utilities"
+];
 
-let transactions = [];
+// Load saved information
+let expenses = JSON.parse(
+    localStorage.getItem("spendwiseExpenses")
+) || [];
 
+let monthlyBudget = Number(
+    localStorage.getItem("spendwiseBudget")
+) || 0;
 
-// ==========================================
-// 2. SELECT HTML ELEMENTS
-// ==========================================
+// HTML elements
+const budgetForm = document.getElementById("budgetForm");
+const budgetInput = document.getElementById("budgetInput");
+const expenseForm = document.getElementById("expenseForm");
+const expenseList = document.getElementById("expenseList");
+const filterCategory = document.getElementById("filterCategory");
 
-const transactionForm = document.getElementById("transactionForm");
+// Currency formatter
+function formatMoney(amount) {
+    return new Intl.NumberFormat("en-KE", {
+        style: "currency",
+        currency: "KES",
+        maximumFractionDigits: 2
+    }).format(amount);
+}
 
-const descriptionInput = document.getElementById("description");
-const amountInput = document.getElementById("amount");
-const typeInput = document.getElementById("type");
-const categoryInput = document.getElementById("category");
+// Save information
+function saveData() {
+    localStorage.setItem(
+        "spendwiseExpenses",
+        JSON.stringify(expenses)
+    );
 
-const balanceDisplay = document.getElementById("balance");
-const incomeDisplay = document.getElementById("income");
-const expensesDisplay = document.getElementById("expenses");
-const transactionCountDisplay =
-    document.getElementById("transactionCount");
+    localStorage.setItem(
+        "spendwiseBudget",
+        monthlyBudget
+    );
+}
 
-const transactionList =
-    document.getElementById("transactionList");
+// Get current month expenses
+function getMonthlyExpenses() {
+    const today = new Date();
 
-const budgetMessage =
-    document.getElementById("budgetMessage");
+    return expenses.filter(expense => {
+        const expenseDate = new Date(
+            expense.date + "T00:00:00"
+        );
 
+        return (
+            expenseDate.getMonth() === today.getMonth() &&
+            expenseDate.getFullYear() === today.getFullYear()
+        );
+    });
+}
 
-// ==========================================
-// 3. EVENT LISTENER
-// Listen for form submission
-// ==========================================
+// Calculate totals
+function updateDashboard() {
+    const monthlyExpenses = getMonthlyExpenses();
 
-transactionForm.addEventListener("submit", function(event) {
+    const total = monthlyExpenses.reduce(
+        (sum, expense) => sum + expense.amount,
+        0
+    );
 
-    // Stop the page from refreshing
-    event.preventDefault();
+    const savings = monthlyExpenses
+        .filter(expense => expense.category === "Savings")
+        .reduce((sum, expense) => sum + expense.amount, 0);
 
+    const remaining = monthlyBudget - total;
 
-    // ==========================================
-    // Get values from the form
-    // ==========================================
+    document.getElementById("budgetDisplay").textContent =
+        formatMoney(monthlyBudget);
 
-    const description = descriptionInput.value.trim();
+    document.getElementById("totalExpenses").textContent =
+        formatMoney(total);
 
-    const amount = Number(amountInput.value);
+    document.getElementById("remainingBalance").textContent =
+        formatMoney(remaining);
 
-    const type = typeInput.value;
+    document.getElementById("remainingBalance").style.color =
+        remaining < 0 ? "#dc3545" : "#168b70";
 
-    const category = categoryInput.value;
+    document.getElementById("totalSavings").textContent =
+        formatMoney(savings);
 
-
-    // ==========================================
-    // 4. CONDITIONAL STATEMENTS
-    // Validate user input
-    // ==========================================
-
-    if (description === "") {
-
-        alert("Please enter a description.");
-
-        return;
-    }
-
-
-    if (amount <= 0 || isNaN(amount)) {
-
-        alert("Please enter a valid amount.");
-
-        return;
-    }
-
-
-    // ==========================================
-    // Create transaction object
-    // ==========================================
-
-    const transaction = {
-
-        description: description,
-
-        amount: amount,
-
-        type: type,
-
-        category: category
-
+    // Update category cards
+    const categoryIds = {
+        Food: "foodTotal",
+        Transport: "transportTotal",
+        Rent: "rentTotal",
+        Entertainment: "entertainmentTotal",
+        Savings: "savingsCategoryTotal",
+        Utilities: "utilitiesTotal"
     };
 
+    categories.forEach(category => {
+        const categoryTotal = monthlyExpenses
+            .filter(expense => expense.category === category)
+            .reduce((sum, expense) => sum + expense.amount, 0);
 
-    // ==========================================
-    // Add transaction to ARRAY
-    // ==========================================
+        document.getElementById(
+            categoryIds[category]
+        ).textContent = formatMoney(categoryTotal);
+    });
 
-    transactions.push(transaction);
-
-
-    // ==========================================
-    // Update the dashboard
-    // ==========================================
-
-    updateDashboard();
-
-
-    // ==========================================
-    // Clear the form
-    // ==========================================
-
-    transactionForm.reset();
-
-});
-
-
-// ==========================================
-// 5. UPDATE DASHBOARD
-// ==========================================
-
-function updateDashboard() {
-
-    // Start totals at zero
-
-    let totalIncome = 0;
-
-    let totalExpenses = 0;
-
-
-    // ==========================================
-    // 6. LOOP THROUGH TRANSACTIONS
-    // ==========================================
-
-    for (
-        let i = 0;
-        i < transactions.length;
-        i++
-    ) {
-
-        const transaction = transactions[i];
-
-
-        // ==========================================
-        // CONDITIONAL
-        // Check transaction type
-        // ==========================================
-
-        if (transaction.type === "income") {
-
-            totalIncome += transaction.amount;
-
-        }
-
-        else if (transaction.type === "expense") {
-
-            totalExpenses += transaction.amount;
-
-        }
-
-    }
-
-
-    // ==========================================
-    // Calculate balance
-    // ==========================================
-
-    const balance = totalIncome - totalExpenses;
-
-
-    // ==========================================
-    // 7. DOM MANIPULATION
-    // Update dashboard values
-    // ==========================================
-
-    balanceDisplay.textContent =
-        `KES ${balance.toLocaleString()}`;
-
-    incomeDisplay.textContent =
-        `KES ${totalIncome.toLocaleString()}`;
-
-    expensesDisplay.textContent =
-        `KES ${totalExpenses.toLocaleString()}`;
-
-    transactionCountDisplay.textContent =
-        transactions.length;
-
-
-    // ==========================================
-    // 8. BUDGET FEEDBACK
-    // Use conditionals to give feedback
-    // ==========================================
-
-    if (transactions.length === 0) {
-
-        budgetMessage.textContent =
-            "Add a transaction to see your budget status.";
-
-    }
-
-    else if (balance > 0) {
-
-        budgetMessage.textContent =
-            "Good job! You currently have a positive balance.";
-
-    }
-
-    else if (balance === 0) {
-
-        budgetMessage.textContent =
-            "Your balance is currently zero.";
-
-    }
-
-    else {
-
-        budgetMessage.textContent =
-            "Warning: Your expenses are higher than your income.";
-
-    }
-
-
-    // ==========================================
-    // Display transactions
-    // ==========================================
-
-    displayTransactions();
-
+    updateChart();
 }
 
+// Display transaction history
+function displayExpenses() {
+    expenseList.innerHTML = "";
 
-// ==========================================
-// 9. DISPLAY TRANSACTIONS
-// ==========================================
+    const selectedCategory = filterCategory.value;
 
-function displayTransactions() {
+    const filteredExpenses = expenses.filter(expense => {
+        return (
+            selectedCategory === "All" ||
+            expense.category === selectedCategory
+        );
+    });
 
-    // Remove the old list
+    document.getElementById("emptyMessage").style.display =
+        filteredExpenses.length === 0 ? "block" : "none";
 
-    transactionList.innerHTML = "";
+    filteredExpenses.forEach(expense => {
+        const row = document.createElement("tr");
 
+        const descriptionCell = document.createElement("td");
+        descriptionCell.textContent = expense.name;
 
-    // ==========================================
-    // Check if there are no transactions
-    // ==========================================
+        const amountCell = document.createElement("td");
+        amountCell.textContent = formatMoney(expense.amount);
 
-    if (transactions.length === 0) {
+        const categoryCell = document.createElement("td");
+        categoryCell.textContent = expense.category;
 
-        transactionList.innerHTML =
-            '<p class="empty-message">No transactions yet.</p>';
+        const dateCell = document.createElement("td");
+        dateCell.textContent = expense.date;
 
+        const actionCell = document.createElement("td");
+
+        const deleteButton = document.createElement("button");
+        deleteButton.textContent = "Delete";
+        deleteButton.className = "delete-btn";
+
+        deleteButton.addEventListener("click", () => {
+            deleteExpense(expense.id);
+        });
+
+        actionCell.appendChild(deleteButton);
+
+        row.append(
+            descriptionCell,
+            amountCell,
+            categoryCell,
+            dateCell,
+            actionCell
+        );
+
+        expenseList.appendChild(row);
+    });
+}
+
+// Add a new transaction
+expenseForm.addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const name = document.getElementById("expenseName")
+        .value.trim();
+
+    const amount = Number(
+        document.getElementById("expenseAmount").value
+    );
+
+    const category = document.getElementById("expenseCategory")
+        .value;
+
+    const date = document.getElementById("expenseDate").value;
+
+    if (!name || !Number.isFinite(amount) || amount <= 0 ||
+        !categories.includes(category) || !date) {
+        alert("Please enter valid transaction details.");
         return;
     }
 
+    const newExpense = {
+        id: Date.now().toString() + Math.random().toString(36).slice(2),
+        name: name,
+        amount: amount,
+        category: category,
+        date: date
+    };
 
-    // ==========================================
-    // 10. LOOP THROUGH ARRAY
-    // Display every transaction
-    // ==========================================
+    expenses.push(newExpense);
 
-    for (
-        let i = transactions.length - 1;
-        i >= 0;
-        i--
-    ) {
+    saveData();
+    updateDashboard();
+    displayExpenses();
 
-        const transaction = transactions[i];
+    expenseForm.reset();
+    document.getElementById("expenseDate").value =
+        new Date().toISOString().split("T")[0];
 
+    alert("Transaction added successfully!");
+});
 
-        // ==========================================
-        // Create transaction container
-        // ==========================================
+// Delete a transaction
+function deleteExpense(id) {
+    const confirmed = confirm(
+        "Are you sure you want to delete this transaction?"
+    );
 
-        const transactionDiv =
-            document.createElement("div");
+    if (!confirmed) return;
 
-        transactionDiv.classList.add("transaction");
+    expenses = expenses.filter(expense => expense.id !== id);
 
-
-        // ==========================================
-        // Create information container
-        // ==========================================
-
-        const infoDiv =
-            document.createElement("div");
-
-        infoDiv.classList.add("transaction-info");
-
-
-        // ==========================================
-        // Create transaction title
-        // ==========================================
-
-        const title =
-            document.createElement("h3");
-
-        title.textContent =
-            transaction.description;
-
-
-        // ==========================================
-        // Create transaction details
-        // ==========================================
-
-        const details =
-            document.createElement("p");
-
-        details.textContent =
-            `${transaction.category} • ${transaction.type}`;
-
-
-        // Add title and details
-
-        infoDiv.appendChild(title);
-
-        infoDiv.appendChild(details);
-
-
-        // ==========================================
-        // Create amount
-        // ==========================================
-
-        const amountText =
-            document.createElement("p");
-
-
-        // ==========================================
-        // CONDITIONAL
-        // Add + for income and - for expense
-        // ==========================================
-
-        if (transaction.type === "income") {
-
-            amountText.textContent =
-                `+ KES ${transaction.amount.toLocaleString()}`;
-
-            amountText.classList.add("income-amount");
-
-        }
-
-        else {
-
-            amountText.textContent =
-                `- KES ${transaction.amount.toLocaleString()}`;
-
-            amountText.classList.add("expense-amount");
-
-        }
-
-
-        // ==========================================
-        // Add everything to transaction container
-        // ==========================================
-
-        transactionDiv.appendChild(infoDiv);
-
-        transactionDiv.appendChild(amountText);
-
-
-        // ==========================================
-        // Add transaction to webpage
-        // ==========================================
-
-        transactionList.appendChild(transactionDiv);
-
-    }
-
+    saveData();
+    updateDashboard();
+    displayExpenses();
 }
 
+// Set monthly budget
+budgetForm.addEventListener("submit", function(event) {
+    event.preventDefault();
 
-// ==========================================
-// 11. START APPLICATION
-// ==========================================
+    const newBudget = Number(budgetInput.value);
 
-updateDashboard();
-```
+    if (!Number.isFinite(newBudget) || newBudget < 0) {
+        alert("Please enter a valid budget.");
+        return;
+    }
+
+    monthlyBudget = newBudget;
+
+    saveData();
+    updateDashboard();
+
+    budgetForm.reset();
+
+    alert("Monthly budget updated successfully!");
+});
+
+// Filter transactions
+filterCategory.addEventListener("change", displayExpenses);
+
+// Spending chart
+function updateChart() {
+    const chart = document.getElementById("spendingChart");
+
+    chart.innerHTML = "";
+
+    const monthlyExpenses = getMonthlyExpenses();
+
+    const totals = {};
+
+    categories.forEach(category => {
+        totals[category] = monthlyExpenses
+            .filter(expense => expense.category === category)
+            .reduce((sum, expense) => sum + expense.amount, 0);
+    });
+
+    const maximum = Math.max(...Object.values(totals), 1);
+
+    categories.forEach(category => {
+        const amount = totals[category];
+
+        const row = document.createElement("div");
+        row.className = "chart-row";
+
+        const label = document.createElement("span");
+        label.textContent = category;
+
+        const background = document.createElement("div");
+        background.className = "bar-background";
+
+        const bar = document.createElement("div");
+        bar.className = "bar";
+        bar.style.width = (amount / maximum * 100) + "%";
+
+        background.appendChild(bar);
+
+        const value = document.createElement("span");
+        value.className = "chart-amount";
+        value.textContent = formatMoney(amount);
+
+        row.append(label, background, value);
+
+        chart.appendChild(row);
+    });
+}
+
+// Show today's date
+function displayDate() {
+    const today = new Date();
+
+    document.getElementById("todayDate").textContent =
+        today.toLocaleDateString("en-KE", {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric"
+        });
+}
+
+// Initial application setup
+function initializeApp() {
+    document.getElementById("expenseDate").value =
+        new Date().toISOString().split("T")[0];
+
+    displayDate();
+    updateDashboard();
+    displayExpenses();
+}
+
+initializeApp();

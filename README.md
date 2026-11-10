@@ -1,193 +1,104 @@
-```markdown
-# SpendWise
 
-## Personal Budget & Expense Tracker
+# SpendWise - Personal Budget and Expense Tracker
 
-SpendWise is a simple interactive budgeting application built using HTML, CSS, and JavaScript.
+## 1. Project Description
 
-The application allows users to add income and expense transactions and automatically updates the dashboard.
+SpendWise is a personal budget and expense tracking web application.
 
----
+It helps users manage their monthly budget, record expenses, monitor their remaining balance, and understand their spending habits.
 
-## Improvements Made This Week
+The application provides a simple dashboard where users can organize their finances and track their spending.
 
-This week, SpendWise was improved by adding JavaScript functionality.
+## 2. Technologies Used
 
-The application can now:
-
-- Add income and expense transactions.
-- Store multiple transaction records.
-- Calculate total income.
-- Calculate total expenses.
-- Calculate the current balance.
-- Count the number of transactions.
-- Display transactions directly on the webpage.
-- Provide budget feedback.
-- Respond to user form submissions.
-- Dynamically update the dashboard.
-
----
-
-## 1. Conditional Statements
-
-Conditional statements are used to make decisions in SpendWise.
-
-For example, the application checks whether a transaction is an income or an expense.
-
-```javascript
-if (transaction.type === "income") {
-    totalIncome += transaction.amount;
-} else if (transaction.type === "expense") {
-    totalExpenses += transaction.amount;
-}
-```
-
-Conditional statements are also used to provide feedback about the user's balance.
-
-```javascript
-if (balance > 0) {
-    budgetMessage.textContent =
-        "Good job! You currently have a positive balance.";
-} else if (balance === 0) {
-    budgetMessage.textContent =
-        "Your balance is currently zero.";
-} else {
-    budgetMessage.textContent =
-        "Warning: Your expenses are higher than your income.";
-}
-```
-
----
-
-## 2. Arrays
-
-An array is used to store multiple transaction records.
-
-```javascript
-let transactions = [];
-```
-
-When the user submits a transaction, the transaction is added to the array.
-
-```javascript
-transactions.push(transaction);
-```
-
-This allows SpendWise to manage multiple records instead of using separate variables for every transaction.
-
----
-
-## 3. Loops
-
-Loops are used to process all transactions stored in the array.
-
-For example:
-
-```javascript
-for (let i = 0; i < transactions.length; i++) {
-    const transaction = transactions[i];
-}
-```
-
-The loop is used to calculate total income and total expenses.
-
-Another loop is used to display transactions on the webpage.
-
----
-
-## 4. DOM Manipulation
-
-DOM manipulation is used to update the webpage dynamically.
-
-For example:
-
-```javascript
-balanceDisplay.textContent = `KES ${balance.toLocaleString()}`;
-```
-
-The transaction list is also created dynamically using:
-
-```javascript
-document.createElement("div");
-```
-
-This means the information appears directly on the webpage instead of only appearing in the browser console.
-
----
-
-## 5. Event Listeners
-
-SpendWise uses an event listener to detect when the user submits the transaction form.
-
-```javascript
-transactionForm.addEventListener("submit", function(event) {
-    event.preventDefault();
-});
-```
-
-The event listener allows JavaScript to respond to user actions.
-
-When the form is submitted:
-
-1. JavaScript reads the form data.
-2. The data is validated.
-3. A transaction object is created.
-4. The transaction is added to the array.
-5. The dashboard is updated.
-6. The transaction appears on the webpage.
-7. The form is cleared.
-
----
-
-## 6. Challenges Encountered
-
-One challenge was connecting the form inputs to JavaScript.
-
-This was resolved by using `getElementById()` to select the HTML elements.
-
-Another challenge was calculating income and expenses from multiple records.
-
-This was resolved by storing transactions in an array and using a `for` loop to process each record.
-
-Another challenge was updating the webpage after adding a transaction.
-
-This was solved using DOM manipulation with `textContent`, `createElement()`, and `appendChild()`.
-
----
-
-## Technologies Used
-
-- HTML
-- CSS
+- HTML5
+- CSS3
 - JavaScript
-- DOM Manipulation
-- Arrays
-- Conditional Statements
-- Loops
-- Event Listeners
+- LocalStorage
+- Git and GitHub
+- Netlify
 
----
+## 3. Project Features
 
-## How to Run the Project
+- Monthly budget management.
+- Add new expenses and transactions.
+- Delete recorded transactions.
+- View total expenses.
+- Calculate remaining balance.
+- Track total savings.
+- Six expense categories:
+  - Food
+  - Transport
+  - Rent
+  - Entertainment
+  - Savings
+  - Utilities
+- Filter transactions by category.
+- Spending breakdown chart.
+- Save information using browser LocalStorage.
+- Responsive design for mobile and desktop.
 
-1. Download or clone the repository.
-2. Open the project folder in VS Code.
-3. Open `index.html` in a web browser.
-4. Enter a transaction.
-5. Click **Add Transaction**.
-6. The dashboard will update automatically.
+## 4. GitHub Repository Information
 
----
+GitHub Username: ibrahimayub616
 
-## Assignment Requirements
+Repository Name: budget-tracker
 
-The project demonstrates:
+GitHub Repository:
+https://github.com/ibrahimayub616/budget-tracker
 
-- Decision making using conditional statements.
-- Multiple records using arrays.
-- Data processing using loops.
-- Dynamic dashboard updates using DOM manipulation.
-- User interactions using event listeners.
-- Information displayed directly on the webpage.
-- A complete flow from user action to JavaScript logic and webpage updates.
-```
+## 5. Live Netlify Website
+
+Live Website:
+ADD_YOUR_ACTUAL_NETLIFY_URL_HERE
+
+## 6. Deployment Process Summary
+
+The SpendWise application was deployed using GitHub and Netlify.
+
+The deployment process included:
+
+1. Organized the project files.
+2. Created a public GitHub repository.
+3. Uploaded the project files to GitHub.
+4. Connected the GitHub repository to Netlify.
+5. Configured Netlify to publish the website.
+6. Updated the default Netlify site name.
+7. Published the application online.
+8. Tested the live website.
+9. Made an update to the application.
+10. Pushed the update to GitHub and verified automatic deployment through Netlify.
+
+## 7. Challenges Encountered During Deployment
+
+Some challenges encountered during deployment included:
+
+- Configuring the correct GitHub repository.
+- Connecting GitHub to Netlify.
+- Choosing an available Netlify site name.
+- Ensuring CSS and JavaScript files loaded correctly.
+- Testing the live website after deployment.
+- Understanding automatic deployment.
+
+These challenges were addressed by checking project configuration, reviewing deployment settings, and testing the application.
+
+## 8. Lessons Learned
+
+Through this project, I learned:
+
+- How to organize a web development project.
+- How to upload project files to GitHub.
+- How to deploy a website using Netlify.
+- How to connect GitHub with Netlify.
+- How continuous deployment works.
+- How to test a live website.
+- How to update a published website automatically.
+- The importance of README documentation.
+
+## 9. Conclusion
+
+SpendWise demonstrates my understanding of web development, version control, website hosting, and deployment.
+
+The project is published online using Netlify and its source code is available in a public GitHub repository.
+
+Developed by Ibrahim.
